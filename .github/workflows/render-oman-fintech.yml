@@ -1,0 +1,35 @@
+name: Render Oman FinTech
+on:
+  workflow_dispatch:
+    inputs:
+      narration:
+        description: "Generate synthetic Omani Arabic narration (requires online TTS)"
+        type: boolean
+        default: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-noto-core libcairo2
+      - run: pip install pillow numpy cairosvg edge-tts
+      - run: npm install
+      - run: |
+          gzip -dc projects/oman-fintech/build.py.gz > projects/oman-fintech/build.py
+          python projects/oman-fintech/build.py
+      - if: ${{ inputs.narration }}
+        run: |
+          python projects/oman-fintech/voiceover.py
+          cp projects/oman-fintech/assets/narrated.wav projects/oman-fintech/assets/sound.wav
+      - run: npx remotion render projects/oman-fintech/index.jsx OmanFinTech out/oman-fintech.mp4 --public-dir=projects/oman-fintech/assets
+      - run: ffprobe -v error -show_entries format=duration:stream=codec_name,width,height,r_frame_rate out/oman-fintech.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: oman-fintech
+          path: out/oman-fintech.mp4
