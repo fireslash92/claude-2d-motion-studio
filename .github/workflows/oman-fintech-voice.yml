@@ -1,0 +1,78 @@
+name: Generate timed Omani FinTech voice
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/oman-fintech-voice.yml'
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install edge-tts
+      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+      - name: Generate Omani Arabic cues
+        shell: bash
+        run: |
+          cat > /tmp/voice.py <<'PY'
+          import asyncio, edge_tts, subprocess, wave, array, json
+          from pathlib import Path
+          p=Path('/tmp/omanvoice'); p.mkdir(exist_ok=True)
+          cues=[
+            (0.30,3.40,"التقنيات المالية، تقنية تسهّل علينا الخدمات المالية."),
+            (3.50,5.60,"هذي ستة أمثلة."),
+            (6.30,10.60,"الدفع اللاتلامسي، قرّب تلفونك أو بطاقتك من الجهاز، وادفع في ثواني."),
+            (10.80,13.40,"كوب الكرك، بلمسة وحدة."),
+            (14.30,17.80,"المحفظة الرقمية، فلوسك وبطاقاتك في تطبيق واحد، والتحويل فوري."),
+            (18.00,21.40,"تحوّل عشرين ريال لأخوك في صلالة، وتوصله في ثواني."),
+            (22.30,24.80,"البنوك الرقمية، البنك كله في تلفونك."),
+            (25.00,29.40,"تفتح حساب، تتابع رصيدك، وتدفع فاتورة الكهربا وإنت في بيتك."),
+            (30.30,34.80,"اشترِ الحين وادفع بعدين، تقسّط مشترياتك بدفعات، بعد تقييم رقمي سريع."),
+            (35.00,37.40,"تلفون جديد، على أربعة أشهر."),
+            (38.30,42.00,"البلوك تشين، سجل رقمي مشترك، كل معاملة مرتبطة باللي قبلها."),
+            (42.20,45.40,"وعشان كذا، يصعب التلاعب بالمعاملات."),
+            (46.30,49.40,"الأمان، بصمة وجهك أو إصبعك بدل كلمة المرور."),
+            (49.60,53.40,"وأنظمة ذكية توقف أي عملية مشبوهة، قبل ما تتم."),
+            (54.30,56.60,"المال صار رقمي، فحافظ عليه."),
+            (56.80,59.50,"لا تعطي حد رمز التحقق.")
+          ]
+          async def make(i,c):
+            await edge_tts.Communicate(c[2],voice='ar-OM-AbdullahNeural',rate='+8%').save(str(p/f'{i}.mp3'))
+          async def main():
+            for i,c in enumerate(cues): await make(i,c)
+          asyncio.run(main())
+          sr=48000
+          output=array.array('h',[0])*(60*sr)
+          report=[]
+          for i,(start,end,words) in enumerate(cues):
+            raw=p/f'{i}.wav'
+            source=p/f'{i}.mp3'
+            subprocess.run(['ffmpeg','-v','error','-y','-i',str(source),'-af','silenceremove=start_periods=1:start_duration=0.04:start_threshold=-45dB:stop_periods=-1:stop_duration=0.24:stop_threshold=-45dB','-ar',str(sr),'-ac','1','-c:a','pcm_s16le',str(raw)],check=True)
+            with wave.open(str(raw),'rb') as w: duration=w.getnframes()/sr
+            window=end-start-.05
+            speed=max(1,duration/window)
+            if speed>1.35: raise RuntimeError(f'Cue {i} too fast: {speed:.2f}')
+            if speed>1:
+              subprocess.run(['ffmpeg','-v','error','-y','-i',str(raw),'-af',f'atempo={speed:.6f}','-ar',str(sr),'-ac','1',str(p/f'{i}-fit.wav')],check=True)
+              raw=p/f'{i}-fit.wav'
+            with wave.open(str(raw),'rb') as w:
+              data=array.array('h'); data.frombytes(w.readframes(w.getnframes()))
+            k=round(start*sr)
+            limit=min(len(data),round(window*sr))
+            for j in range(limit): output[k+j]=data[j]
+            report.append(dict(cue=i+1,start=start,end=end,original_seconds=round(duration,3),speed=round(speed,3),final_seconds=round(limit/sr,3),text=words))
+          with wave.open(str(p/'oman-voice.wav'),'wb') as w:
+            w.setnchannels(1);w.setsampwidth(2);w.setframerate(sr);w.writeframes(output.tobytes())
+          (p/'timing.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          print(json.dumps(report,ensure_ascii=False))
+          PY
+          python /tmp/voice.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: oman-voice
+          path: |
+            /tmp/omanvoice/oman-voice.wav
+            /tmp/omanvoice/timing.json
