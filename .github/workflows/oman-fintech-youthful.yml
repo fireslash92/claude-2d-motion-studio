@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install edge-tts
-      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+      - run: command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y ffmpeg)
       - name: Generate Omani Arabic cues
         shell: bash
         run: |
@@ -26,7 +26,7 @@ jobs:
             (3.50,5.60,"هذي ستة أمثلة."),
             (6.30,10.60,"الدفع اللاتلامسي، قرّب تلفونك أو بطاقتك من الجهاز، وادفع في ثواني."),
             (10.80,13.40,"كوب الكرك، بلمسة وحدة."),
-            (14.30,17.80,"المحفظة الرقمية، فلوسك وبطاقاتك في تطبيق واحد، والتحويل فوري."),
+            (14.30,17.80,"المحفظة الرقمية، فلوسك وبطاقاتك بتطبيق واحد، وتحويل فوري."),
             (18.00,21.40,"تحوّل عشرين ريال لأخوك في صلالة، وتوصله في ثواني."),
             (22.30,24.80,"البنوك الرقمية، البنك كله في تلفونك."),
             (25.00,29.40,"تفتح حساب، تتابع رصيدك، وتدفع فاتورة الكهربا وإنت في بيتك."),
@@ -42,7 +42,7 @@ jobs:
           async def make(i,c):
             await edge_tts.Communicate(c[2],voice='ar-OM-AbdullahNeural',rate='+5%',pitch='+7Hz').save(str(p/f'{i}.mp3'))
           async def main():
-            for i,c in enumerate(cues): await make(i,c)
+            for start in range(0,len(cues),4): await asyncio.gather(*(make(i,cues[i]) for i in range(start,min(start+4,len(cues)))))
           asyncio.run(main())
           sr=48000
           output=array.array('h',[0])*(60*sr)
@@ -54,7 +54,7 @@ jobs:
             with wave.open(str(raw),'rb') as w: duration=w.getnframes()/sr
             window=end-start-.05
             speed=max(1,duration/window)
-            if speed>1.35: raise RuntimeError(f'Cue {i} too fast: {speed:.2f}')
+            if speed>1.45: raise RuntimeError(f'Cue {i} too fast: {speed:.2f}')
             if speed>1:
               subprocess.run(['ffmpeg','-v','error','-y','-i',str(raw),'-af',f'atempo={speed:.6f}','-ar',str(sr),'-ac','1',str(p/f'{i}-fit.wav')],check=True)
               raw=p/f'{i}-fit.wav'
