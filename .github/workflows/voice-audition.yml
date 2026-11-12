@@ -1,0 +1,32 @@
+name: Youthful Gulf voice audition
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/voice-audition.yml'
+jobs:
+  audition:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install edge-tts
+      - name: Generate two short voice auditions
+        run: |
+          mkdir -p /tmp/audition
+          cat >/tmp/audition.py <<'PY'
+          import asyncio, edge_tts
+          text="تخيّل، كل معاملاتك المالية صارت في تلفونك! تدفع، تحوّل فلوس، وتتابع حسابك، بكل سهولة. هذي هي التقنية المالية، أسهل وأسرع."
+          async def main():
+              await asyncio.gather(
+                edge_tts.Communicate(text, voice='ar-OM-AbdullahNeural', rate='+5%', pitch='+7Hz').save('/tmp/audition/01-omani-youthful.mp3'),
+                edge_tts.Communicate(text, voice='ar-AE-HamdanNeural', rate='+2%', pitch='+4Hz').save('/tmp/audition/02-gulf-youthful.mp3'))
+          asyncio.run(main())
+          PY
+          python /tmp/audition.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: voice-audition
+          path: /tmp/audition/*.mp3
