@@ -1,0 +1,11 @@
+[
+{"id":"remotion","url":"https://github.com/remotion-dev/remotion","role":"Primary frame-accurate renderer; review special license","import":false},
+{"id":"remotion-skills","url":"https://github.com/remotion-dev/skills","role":"Official agent guidance including Arabic text","import":true},
+{"id":"motion-canvas","url":"https://github.com/motion-canvas/motion-canvas","role":"Alternative vector animation engine","import":true},
+{"id":"remotion-scenes","url":"https://github.com/lifeprompt-team/remotion-scenes","role":"Scene reference library; verify license before reuse","import":true},
+{"id":"gsap","url":"https://github.com/greensock/GSAP","role":"Web animation and SVG; review standard license","import":true},
+{"id":"lottie-web","url":"https://github.com/airbnb/lottie-web","role":"Lottie player; assets require separate license","import":true},
+{"id":"lucide","url":"https://github.com/lucide-icons/lucide","role":"Vector icons; retain license","import":true},
+{"id":"anime","url":"https://github.com/juliangarnier/anime","role":"Alternative SVG and web animation","import":true},
+{"id":"hyperframes","url":"https://github.com/heygen-com/hyperframes","role":"Optional HTML video engine; verify license and setup","import":false}
+]
