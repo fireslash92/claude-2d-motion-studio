@@ -7,11 +7,10 @@ From the repository root:
 ```sh
 npm install
 python -m pip install pillow numpy cairosvg
-gzip -dc projects/oman-fintech/build.py.gz > projects/oman-fintech/build.py
 python projects/oman-fintech/build.py
 npx remotion render projects/oman-fintech/index.jsx OmanFinTech out/oman-fintech.mp4 --public-dir=projects/oman-fintech/assets
 ```
-Install Noto Sans Arabic fonts at the paths in build.py and Cairo system dependencies first. The compressed generator is ordinary editable Python after decompression. It produces original layered SVG and native-size PNG artwork, shaped Arabic text and a WAV sound bed. No external artwork is redistributed.
+Install Noto Sans Arabic fonts at the paths in build.py and Cairo system dependencies first. The generator is ordinary editable Python. It produces original layered SVG and native-size PNG artwork, shaped Arabic text and a WAV sound bed. No external artwork is redistributed.
 
 ## Narration (optional online production step)
 ```sh
