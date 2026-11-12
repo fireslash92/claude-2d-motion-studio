@@ -1,11 +1,16 @@
 name: Render Oman FinTech
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'projects/oman-fintech/**'
+      - '.github/workflows/render-oman-fintech.yml'
   workflow_dispatch:
     inputs:
       narration:
         description: "Generate synthetic Omani Arabic narration (requires online TTS)"
         type: boolean
-        default: false
+        default: true
 jobs:
   render:
     runs-on: ubuntu-latest
@@ -21,12 +26,12 @@ jobs:
       - run: pip install pillow numpy cairosvg edge-tts
       - run: npm install
       - run: |
-          gzip -dc projects/oman-fintech/build.py.gz > projects/oman-fintech/build.py
           python projects/oman-fintech/build.py
-      - if: ${{ inputs.narration }}
+      - if: ${{ github.event_name == 'push' || inputs.narration }}
         run: |
           python projects/oman-fintech/voiceover.py
           cp projects/oman-fintech/assets/narrated.wav projects/oman-fintech/assets/sound.wav
+      - run: mkdir -p out
       - run: npx remotion render projects/oman-fintech/index.jsx OmanFinTech out/oman-fintech.mp4 --public-dir=projects/oman-fintech/assets
       - run: ffprobe -v error -show_entries format=duration:stream=codec_name,width,height,r_frame_rate out/oman-fintech.mp4
       - uses: actions/upload-artifact@v4
