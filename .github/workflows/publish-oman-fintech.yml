@@ -1,0 +1,38 @@
+name: Preserve final Oman FinTech MP4
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-oman-fintech.yml'
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: oman-fintech
+          run-id: 43234514861
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: /tmp/fintech-render
+      - name: Normalize final duration and preserve MP4
+        run: |
+          command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+          ffmpeg -v error -y -i /tmp/fintech-render/oman-fintech.mp4 -map 0 -c:v copy -c:a aac -b:a 192k -t 60 -movflags +faststart projects/oman-fintech/Oman-FinTech.mp4
+          ffprobe -v error -show_entries format=duration:stream=codec_name,width,height,r_frame_rate projects/oman-fintech/Oman-FinTech.mp4
+      - name: Record final delivery
+        run: |
+          cat >> projects/oman-fintech/README.md <<'EOF'
+
+          ## Final delivery
+          The cloud Remotion render completed with all six synthetic Omani Arabic cues mixed into the soundtrack. The final MP4 is tracked as `Oman-FinTech.mp4` next to the mobile preview. Its video is 1800 frames at 30fps, H.264 1920x1080, with AAC audio. The final file has been normalized to 60.000 seconds. Open preview.html and the MP4 together on a static host. The synthetic narration has not been reviewed by a native Omani speaker, and this edition uses simple independent layer motion rather than articulated character rigs or complex liquid morphing.
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects/oman-fintech/Oman-FinTech.mp4 projects/oman-fintech/README.md
+          git diff --cached --quiet || git commit -m "Preserve final narrated Oman FinTech MP4"
+          git push origin HEAD:main
