@@ -1,0 +1,26 @@
+name: Buraimi FinTech narration
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'projects/buraimi-fintech/cues.json'
+      - 'projects/buraimi-fintech/voice.py'
+      - '.github/workflows/buraimi-fintech-voice.yml'
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install edge-tts
+      - run: command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y ffmpeg)
+      - run: python projects/buraimi-fintech/voice.py /tmp/buraimi-voice
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: buraimi-fintech-voice
+          path: |
+            /tmp/buraimi-voice/voice.wav
+            /tmp/buraimi-voice/timing.json
