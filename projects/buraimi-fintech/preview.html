@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ar" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>التقنية المالية في دقيقة — محافظة البريمي</title>
+<style id="fonts">
+  @font-face{font-family:"Tajawal";src:url("assets/fonts/Tajawal-Regular.ttf");font-weight:400}
+  @font-face{font-family:"Tajawal";src:url("assets/fonts/Tajawal-Bold.ttf");font-weight:700}
+</style>
+<style>
+  /* Put Tajawal (OFL) in assets/fonts/ for the repository render. ?local=1 uses the renderer's own subset font. */
+  html,body{margin:0;background:#101426;height:100%}
+  body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-family:system-ui,sans-serif;color:#dfe5f5}
+  #fit{width:min(100vw,calc((100vh - 70px)*16/9));aspect-ratio:16/9;position:relative;overflow:hidden}
+  #stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;background:#F3F6FB}
+  #svg svg{display:block}
+  #lockup{position:absolute;left:44px;top:30px;height:132px;padding:0 30px;border-radius:34px;background:#fff;box-shadow:0 10px 28px rgba(31,42,92,.14);display:flex;align-items:center;gap:26px}
+  #lockup img.b{height:108px} #lockup img.t{height:64px} #lockup i{width:2px;height:76px;background:#D5DEEC}
+  #endlogos{position:absolute;left:260px;top:220px;width:1400px;height:500px;display:flex;align-items:center;justify-content:space-around;flex-direction:row-reverse}
+  #endlogos img.b{height:236px} #endlogos img.t{height:190px}
+  #bar{display:flex;gap:12px;align-items:center;width:min(100vw,900px);padding:0 12px;box-sizing:border-box}
+  #bar input{flex:1} button{font:inherit;padding:6px 16px;border-radius:999px;border:0;background:#139ABC;color:#fff;cursor:pointer}
+  body.export{display:block;background:#F3F6FB} body.export #fit{width:1920px;height:1080px;aspect-ratio:auto} body.export #bar{display:none}
+</style>
+</head>
+<body>
+<div id="fit"><div id="stage">
+  <div id="svg"></div>
+  <div id="lockup"><img class="b" src="assets/logo-buraimi.png" alt="محافظة البريمي"><i></i><img class="t" src="assets/logo-tahawul.png" alt="تحوّل"></div>
+  <div id="endlogos"><img class="b" src="assets/logo-buraimi.png" alt=""><img class="t" src="assets/logo-tahawul.png" alt=""></div>
+</div></div>
+<div id="bar"><button id="play">تشغيل</button><input id="scrub" type="range" min="0" max="3599" value="0"><span id="tc">0.0</span></div>
+<audio id="aud" src="assets/soundtrack.m4a" preload="auto"></audio>
+<script type="module">
+import { renderFrame, FRAMES, FPS } from './film.js';
+const q = new URLSearchParams(location.search), local = q.has('local');
+let opt = {};
+if (local) { document.getElementById('fonts').remove();   // offline renderer: subset font without OpenType shaping, so shape the text here
+  const css = document.createElement('style');
+  css.textContent = '@font-face{font-family:"Tajawal";src:url("/localfonts/Taj.ttf");font-weight:100 900}@font-face{font-family:"Lat";src:url("/localfonts/LatR.otf");font-weight:100 500}@font-face{font-family:"Lat";src:url("/localfonts/LatB.otf");font-weight:600 900}';
+  document.head.appendChild(css);
+  const [{ shapeAr }, cmap] = await Promise.all([import('/localfonts/arshape.mjs'), fetch('/localfonts/cmap_merged.json').then(r => r.json())]);
+  const has = new Set(cmap);
+  opt = { faux: true, shape: s => shapeAr(s.replace(/[َُِ]/g, ''), c => has.has(c)) };
+}
+if (q.has('export')) document.body.classList.add('export');
+const svg = document.getElementById('svg'), lock = document.getElementById('lockup'), end = document.getElementById('endlogos');
+window.renderAt = f => {
+  const r = renderFrame(f, opt);
+  svg.innerHTML = r.svg;
+  lock.style.opacity = r.logos.lockup; lock.style.transform = `translateY(${(1 - r.logos.lockup) * -30}px)`;
+  end.style.opacity = r.logos.end; end.style.transform = `scale(${r.logos.endScale})`;
+};
+const fit = document.getElementById('fit'), stage = document.getElementById('stage');
+const resize = () => { stage.style.transform = `scale(${fit.clientWidth / 1920})`; };
+new ResizeObserver(resize).observe(fit); resize();
+const scrub = document.getElementById('scrub'), tc = document.getElementById('tc'), btn = document.getElementById('play'), aud = document.getElementById('aud');
+let playing = false, t0 = 0, f0 = 0;
+const show = f => { window.renderAt(f); scrub.value = f; tc.textContent = (f / FPS).toFixed(1); };
+btn.onclick = () => { playing = !playing; btn.textContent = playing ? 'إيقاف' : 'تشغيل'; f0 = +scrub.value >= FRAMES - 1 ? 0 : +scrub.value; t0 = performance.now();
+  if (playing) { aud.currentTime = f0 / FPS; aud.play().catch(() => {}); requestAnimationFrame(loop); } else aud.pause(); };
+scrub.oninput = () => { playing = false; btn.textContent = 'تشغيل'; aud.pause(); show(+scrub.value); };
+function loop(now) { if (!playing) return; const f = f0 + Math.floor((now - t0) / 1000 * FPS); if (f >= FRAMES) { playing = false; btn.textContent = 'تشغيل'; show(FRAMES - 1); return; } show(f); requestAnimationFrame(loop); }
+show(+(q.get('f') || 0));
+window.filmReady = true;
+</script>
+</body>
+</html>
