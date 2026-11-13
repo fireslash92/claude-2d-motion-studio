@@ -11,7 +11,7 @@ Intro, five everyday examples, closing card with the two logos. Each example sho
 | 0–5 s | التقنية المالية | Title, "أسرع · أسهل · آمن" |
 | 5–15 s | الدفع اللاتلامسي | Phone moves to the terminal, signal, payment accepted for a cup of karak |
 | 15–25 s | التحويل الفوري | Pick recipient, enter amount, send; the money travels from Al Buraimi to Salalah |
-| 25–35 s | البنك في جوالك | Balance, electricity bill paid from home, no branch visit |
+| 25–35 s | البنك في هاتفك | Balance, electricity bill paid from home, no branch visit |
 | 35–45 s | للمشاريع الصغيرة | Customer scans the stall's payment code, the owner receives the money, sales grow |
 | 45–54 s | الأمان أولًا | A message asks for the verification code and is refused; check the app and the link |
 | 54–60 s | Closing | Recap of the five, then the logos |
