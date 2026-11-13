@@ -1,26 +1,26 @@
 [
   {
     "cue": 1,
-    "start": 0.4,
-    "end": 4.8,
-    "spoken_seconds": 5.429,
-    "speed": 1.248,
+    "start": 0.3,
+    "end": 4.9,
+    "spoken_seconds": 5.126,
+    "speed": 1.127,
     "fits": true,
-    "say": "التقنية المالية، تخلّي خدماتك المالية في تلفونك. أسرع، وأسهل، وآمن."
+    "say": "التقنية المالية، خدماتك المالية في تلفونك. أسرع، وأسهل، وآمن."
   },
   {
     "cue": 2,
     "start": 5.3,
-    "end": 9.4,
-    "spoken_seconds": 4.558,
-    "speed": 1.126,
+    "end": 10.0,
+    "spoken_seconds": 4.559,
+    "speed": 1.0,
     "fits": true,
     "say": "أول شي، الدفع اللاتلامسي. قرّب تلفونك أو بطاقتك من جهاز الدفع."
   },
   {
     "cue": 3,
-    "start": 9.6,
-    "end": 14.6,
+    "start": 10.2,
+    "end": 14.7,
     "spoken_seconds": 4.418,
     "speed": 1.0,
     "fits": true,
@@ -28,17 +28,17 @@
   },
   {
     "cue": 4,
-    "start": 15.3,
-    "end": 19.6,
+    "start": 15.2,
+    "end": 20.4,
     "spoken_seconds": 5.131,
-    "speed": 1.207,
+    "speed": 1.0,
     "fits": true,
     "say": "ثاني شي، التحويل الفوري. اختار المستلم، واكتب المبلغ، واضغط إرسال."
   },
   {
     "cue": 5,
-    "start": 19.8,
-    "end": 24.6,
+    "start": 20.6,
+    "end": 24.7,
     "spoken_seconds": 3.916,
     "speed": 1.0,
     "fits": true,
@@ -46,17 +46,17 @@
   },
   {
     "cue": 6,
-    "start": 25.3,
-    "end": 29.5,
+    "start": 25.2,
+    "end": 30.35,
     "spoken_seconds": 5.058,
-    "speed": 1.219,
+    "speed": 1.0,
     "fits": true,
     "say": "ثالث شي، البنك في تلفونك. تتابع رصيدك، وتدفع فواتيرك في أي وقت."
   },
   {
     "cue": 7,
-    "start": 29.7,
-    "end": 34.6,
+    "start": 30.55,
+    "end": 34.7,
     "spoken_seconds": 3.959,
     "speed": 1.0,
     "fits": true,
@@ -64,17 +64,17 @@
   },
   {
     "cue": 8,
-    "start": 35.3,
-    "end": 39.7,
+    "start": 35.2,
+    "end": 40.3,
     "spoken_seconds": 5.017,
-    "speed": 1.153,
+    "speed": 1.0,
     "fits": true,
     "say": "رابع شي، المشاريع الصغيرة. الزبون يمسح رمز الدفع، ويدفع من تلفونه."
   },
   {
     "cue": 9,
-    "start": 39.9,
-    "end": 44.6,
+    "start": 40.5,
+    "end": 44.7,
     "spoken_seconds": 3.556,
     "speed": 1.0,
     "fits": true,
@@ -82,17 +82,17 @@
   },
   {
     "cue": 10,
-    "start": 45.3,
-    "end": 49.6,
+    "start": 45.2,
+    "end": 50.2,
     "spoken_seconds": 4.926,
-    "speed": 1.159,
+    "speed": 1.0,
     "fits": true,
     "say": "وأهم شي، الأمان. لا تعطي حد رمز التحقق، حتى لو قال إنه من البنك."
   },
   {
     "cue": 11,
-    "start": 49.8,
-    "end": 53.7,
+    "start": 50.4,
+    "end": 53.9,
     "spoken_seconds": 3.419,
     "speed": 1.0,
     "fits": true,
@@ -100,10 +100,10 @@
   },
   {
     "cue": 12,
-    "start": 54.3,
-    "end": 59.5,
-    "spoken_seconds": 5.365,
-    "speed": 1.042,
+    "start": 54.2,
+    "end": 59.7,
+    "spoken_seconds": 5.366,
+    "speed": 1.0,
     "fits": true,
     "say": "التقنية المالية، أسهل وأسرع وآمن. محافظة البريمي، نحو مجتمع رقمي."
   }
