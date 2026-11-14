@@ -1,0 +1,38 @@
+name: Buraimi Semiconductors narration
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'projects/buraimi-semiconductors/cues.json'
+      - 'projects/buraimi-semiconductors/voice.py'
+      - '.github/workflows/buraimi-semiconductors-voice.yml'
+permissions:
+  contents: write
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install edge-tts
+      - run: command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y ffmpeg)
+      - run: python projects/buraimi-semiconductors/voice.py /tmp/semi-voice
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: buraimi-semiconductors-voice
+          path: |
+            /tmp/semi-voice/voice.wav
+            /tmp/semi-voice/timing.json
+      - name: Keep the narration next to the film
+        run: |
+          mkdir -p projects/buraimi-semiconductors/assets
+          ffmpeg -v error -y -i /tmp/semi-voice/voice.wav -c:a libmp3lame -b:a 192k projects/buraimi-semiconductors/assets/voice.mp3
+          cp /tmp/semi-voice/timing.json projects/buraimi-semiconductors/assets/voice-timing.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects/buraimi-semiconductors/assets/voice.mp3 projects/buraimi-semiconductors/assets/voice-timing.json
+          git diff --cached --quiet || git commit -m "Update synthesized narration track"
+          git push origin HEAD:${{ github.ref_name }}
