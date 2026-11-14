@@ -242,7 +242,7 @@ function scSwitch(f, lf) {
   for (let i = 0; i < 9; i++) { const u = ((lf / 50 + i / 9) % 1), x = lerp(1010, 350, u);
     if (k > .5) { if (x > cx + 180 || x < cx - 180) s += electron(x, cy, 10); }
     else if (i < 4) s += electron(cx + 196 + i * 30 + 2 * sin(lf / 5 + i), cy, 10); }
-  s += tx('تحكم', cx + 150, cy - 240, 30, { fill: C.mute, bold: 1, anchor: 'm' });
+  s += tx('تحكم', cx - 130, cy - 240, 32, { fill: C.mute, bold: 1, anchor: 'm' });
   // the big digit: what the switch means
   const dp = tw(lf, 336, 360);
   if (dp > 0) s += at(940, 330, .6 + .4 * back(dp), rect(-90, -110, 180, 220, 36, '#fff', `filter="url(#sh)"`) + num(on ? '1' : '0', 0, 52, 150, { anchor: 'm', bold: 1, fill: on ? C.green : C.mute }), clamp(dp * 3));
@@ -275,7 +275,7 @@ function scChip(f, lf) {
   s += arrow(345, 600, tw(lf, 436, 460));
   // the finished chip beside a fingertip
   const cp = tw(lf, 450, 476);
-  if (cp > 0) s += at(190, 600, .5 + .5 * back(cp), g(rect(-52, -150, 104, 250, 52, C.skin) + rect(-38, -138, 76, 86, 30, '#F1D2BC') + path('M-52 40 h104', 'none', stroke(C.skinD, 4)), 'translate(-64 60) rotate(-8)') + at(70, -30, 1, chipG(86)) + tx('شريحة', 20, 180, 44, { anchor: 'm', bold: 1 }), clamp(cp * 3));
+  if (cp > 0) s += at(190, 600, .5 + .5 * back(cp), g(rect(-52, -150, 104, 250, 52, C.skin) + rect(-38, -138, 76, 86, 30, '#F1D2BC') + path('M-52 40 h104', 'none', stroke(C.skinD, 4)), 'translate(-64 60) rotate(-8)') + at(70, -30, 1, chipG(86)) + tx('شريحة', 74, 96, 44, { anchor: 'm', bold: 1 }), clamp(cp * 3));
   return s;
 }
 
@@ -288,14 +288,14 @@ const DEV = {
   solar: c => path('M-44 26 L-28 -22 H28 L44 26 Z M-36 2 H36 M-10 -22 L-14 26 M10 -22 L14 26', 'none', stroke(c, 6)) + circ(40, -40, 9, c),
 };
 function scWhere(f, lf) {
-  const cx = 540, cy = 540, items = [['phone', 'الهاتف النقال', 860, 320, 130, C.teal], ['laptop', 'الحاسوب', 900, 690, 190, C.indigo], ['car', 'السيارة', 540, 274, 250, C.magenta], ['med', 'الأجهزة الطبية', 180, 690, 330, C.green], ['solar', 'الألواح الشمسية', 200, 320, 440, C.gold]];
+  const cx = 540, cy = 540, items = [['phone', 'الهاتف النقال', 860, 320, 130, C.teal], ['laptop', 'الحاسوب', 900, 690, 190, C.indigo], ['car', 'السيارة', 540, 286, 250, C.magenta], ['med', 'الأجهزة الطبية', 180, 690, 330, C.green], ['solar', 'الألواح الشمسية', 200, 320, 440, C.gold]];
   let s = '', top = '';
   items.forEach(([k, label, x, y, a, col], i) => {
     const p = tw(lf, a, a + 24); if (p <= 0) return;
     const lp = eo(tw(lf, a - 4, a + 30)), ex = lerp(cx, x, lp), ey = lerp(cy, y, lp);
     s += path(`M${cx} ${cy} L${n2(ex)} ${n2(ey)}`, 'none', stroke('#B9C6DC', 8));
     for (let d = 0; d < 2; d++) { const u = ((lf - a) / 70 + d / 2) % 1; if (lf > a + 30) s += circ(lerp(cx, x, u), lerp(cy, y, u), 9, col); }
-    top += at(x, y, .5 + .5 * back(p), rect(-84, -84, 168, 168, 40, '#fff', `filter="url(#sh)"`) + at(0, -10, 1.15, DEV[k](col === C.gold ? C.goldD : col)) + rect(-100, 72, 200, 48, 24, col === C.gold ? C.goldD : col) + tx(label, 0, 105, 26, { anchor: 'm', fill: '#fff', bold: 1 }), clamp(p * 3));
+    top += at(x, y, .5 + .5 * back(p), rect(-100, -100, 200, 200, 46, '#fff', `filter="url(#sh)"`) + at(0, -16, 1.4, DEV[k](col === C.gold ? C.goldD : col)) + rect(-122, 84, 244, 58, 29, col === C.gold ? C.goldD : col) + tx(label, 0, 124, 32, { anchor: 'm', fill: '#fff', bold: 1 }), clamp(p * 3));
   });
   const cp = back(tw(lf, 40, 70)), pulse = 1 + .04 * sin(lf / 9);
   return s + at(cx, cy, cp * pulse, circ(0, 0, 130, C.cyan, 'opacity=".18"') + chipG(150, { pins: 6 }), clamp(tw(lf, 40, 52))) + top;
@@ -304,10 +304,10 @@ function scWhere(f, lf) {
 // 5. why it matters: AI, the digital economy, and jobs for young people
 function scWhy(f, lf) {
   const cheer = lf > 330 && lf < 500;
-  const w = { x: 360, y: GY, s: .86, f, kind: 'woman', seed: 90, L: [16, 100], R: cheer ? [-150 + 12 * sin(lf / 7), -24] : [-10, -8], heldL: `<g transform="translate(0 ${L2 - 30})">${chipG(70)}</g>` };
-  const m = { x: 720, y: GY, s: .86, f, seed: 30, k1: C.green, k2: C.teal, R: [-14, -96], L: [8, 6], heldR: heldPhone(-4) };
+  const w = { x: 360, y: GY, s: .76, f, kind: 'woman', seed: 90, L: [16, 100], R: cheer ? [-118 + 10 * sin(lf / 7), -50] : [-10, -8], heldL: `<g transform="translate(0 ${L2 - 30})">${chipG(70)}</g>` };
+  const m = { x: 720, y: GY, s: .76, f, seed: 30, k1: C.green, k2: C.teal, R: [-14, -96], L: [8, 6], heldR: heldPhone(-4) };
   let s = '';
-  const card = (x, a, inner, label) => { const p = tw(lf, a, a + 24); return p <= 0 ? '' : at(x, 300 + 6 * sin(f / 40 + x), .5 + .5 * back(p), rect(-130, -100, 260, 200, 36, '#fff', `filter="url(#sh)"`) + inner + tx(label, 0, 78, 28, { anchor: 'm', bold: 1 }), clamp(p * 3)); };
+  const card = (x, a, inner, label) => { const p = tw(lf, a, a + 24); return p <= 0 ? '' : at(x, 312 + 6 * sin(f / 40 + x), .5 + .5 * back(p), rect(-134, -112, 268, 224, 36, '#fff', `filter="url(#sh)"`) + g(inner, 'translate(0 -14)') + tx(label, 0, 84, 30, { anchor: 'm', bold: 1 }), clamp(p * 3)); };
   const glow = .5 + .5 * sin(lf / 8);
   s += card(820, 100, circ(0, -22, 62, C.cyan, `opacity="${n2(.15 + .15 * glow)}"`) + at(0, -22, 1, chipG(84, { inner: num('AI', 0, 13, 34, { anchor: 'm', bold: 1, fill: '#fff' }), core: C.magenta })), 'الذكاء الاصطناعي');
   let bars = ''; [.3, .45, .6, .8, 1].forEach((h, i) => { const p = eo(tw(lf, 232 + i * 10, 268 + i * 10)); bars += rect(64 - i * 36, 36 - 96 * h * p, 26, 96 * h * p, 7, i === 4 ? C.green : '#B9C6E6'); });
