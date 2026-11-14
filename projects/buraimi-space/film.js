@@ -22,7 +22,7 @@ export const SCENES = [
     steps: [['هاتفك يستقبل عدة أقمار', 120], ['يحسب بُعده عن كل قمر', 330], ['فيعرف موقعك بدقة', 450]], result: ['الخرائط والملاحة', 510] },
   { id: 'obs', start: 2100, end: 2700, n: 4, title: 'رصد الأرض', def: ['صور من الفضاء', 'تساعدنا على اتخاذ القرار.'],
     steps: [['متابعة الطقس والأعاصير', 130], ['مراقبة الزراعة والمياه', 330], ['دعم فرق الطوارئ', 450]], result: ['قرارات أدق وأسرع', 500] },
-  { id: 'explore', start: 2700, end: 3240, n: 5, title: 'الاستكشاف والفرص', def: ['علم يفتح أبوابًا جديدة.'],
+  { id: 'explore', start: 2700, end: 3240, n: 5, title: 'الاستكشاف', def: ['علم يفتح أبوابًا وفرصًا جديدة.'],
     steps: [['استكشاف القمر والمريخ', 100], ['أقمار صغيرة يبنيها الطلبة', 215], ['وظائف في الهندسة والبيانات', 320]], result: ['الفضاء يبدأ بالتعلّم', 440] },
   { id: 'outro', start: 3240, end: 3600 },
 ];
@@ -217,12 +217,12 @@ function scSat(f, lf) {
   const cx = 540, cy = 570, RE = 160, RO = 300;
   let s = sky(f) + earth(cx, cy, RE, f);
   const op = tw(lf, 236, 270); if (op > 0) s += circ(cx, cy, RO, 'none', `${stroke('#8FA3D8', 4)} stroke-dasharray="6 14" opacity="${n2(op * .8)}"`);
-  const pos = u => { const th = rad(lerp(-90, 14, eio(u))), r = lerp(RE + 40, RO, eo(u)); return [cx + r * cos(th), cy + r * sin(th)]; };
+  const pos = u => { const th = rad(lerp(-90, 14, eio(u))), r = lerp(RE + 60, RO, eo(u)); return [cx + r * cos(th), cy + r * sin(th)]; };
   const u = tw(lf, 124, 262);
-  if (lf < 124) s += at(cx, cy - RE - 44, .62, rocketG(lf > 96 ? .4 + .3 * sin(lf) : 0));
+  if (lf < 124) s += at(cx, cy - RE - 60, .9, rocketG(lf > 96 ? .4 + .3 * sin(lf) : 0));
   else if (u < 1) { const a = pos(u), b = pos(Math.min(1, u + .01)), hd = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / PI + 90;
     for (let k = 1; k <= 9; k++) { const q = pos(Math.max(0, u - k * .022)); s += circ(q[0], q[1], 16 - k * 1.2, '#fff', `opacity="${n2(.5 - k * .05)}"`); }
-    s += at(a[0], a[1], .62, rocketG(.7 + .3 * sin(lf * 1.3)), 1, hd); }
+    s += at(a[0], a[1], .9, rocketG(.7 + .3 * sin(lf * 1.3)), 1, hd); }
   if (lf >= 262) { const th = rad(14 + (lf - 262) * .42), x = cx + RO * cos(th), y = cy + RO * sin(th), sp = tw(lf, 262, 284);
     s += ripple(pos(1)[0], pos(1)[1], tw(lf, 262, 300), C.cyan, 90) + at(x, y, .5 + .5 * back(sp), satG(), 1, th * 180 / PI - 90); }
   s += tag(cx, 250, 'المدار', tw(lf, 262, 284), C.indigo, '#fff', 180);
@@ -277,7 +277,7 @@ function scObserve(f, lf) {
     s += at(cx + 60, cy + 40, .5 + .5 * back(cyc), sp + circ(0, 0, 12, '#2F8FC4'), cyc); }
   const th = rad(-150 + (lf / 600) * 120), sx = cx + 330 * cos(th), sy = cy + 330 * sin(th), aim = [cx + 150 * cos(th), cy + 150 * sin(th)];
   s += path(`M${n2(sx)} ${n2(sy)} L${n2(aim[0] - 70 * sin(th))} ${n2(aim[1] + 70 * cos(th))} L${n2(aim[0] + 70 * sin(th))} ${n2(aim[1] - 70 * cos(th))} Z`, C.cyan, `opacity="${n2(.2 + .12 * sin(lf / 7))}"`) + sat(sx, sy, .8, th * 180 / PI - 90);
-  const tile = (k, label, x, y, a, col) => { const p = tw(lf, a, a + 24); return p <= 0 ? '' : at(x, y, .5 + .5 * back(p), rect(-96, -96, 192, 192, 44, '#fff', `filter="url(#sh)"`) + at(0, -14, 1.3, OBS[k](col)) + rect(-116, 80, 232, 56, 28, col) + tx(label, 0, 119, 30, { anchor: 'm', fill: '#fff', bold: 1 }), clamp(p * 3)); };
+  const tile = (k, label, x, y, a, col) => { const p = tw(lf, a, a + 24); return p <= 0 ? '' : at(x, y, .5 + .5 * back(p), rect(-96, -96, 192, 192, 44, '#fff', `filter="url(#sh)"`) + at(0, -14, 1.3, OBS[k](col)) + rect(-140, 80, 280, 56, 28, col) + tx(label, 0, 118, 28, { anchor: 'm', fill: '#fff', bold: 1 }), clamp(p * 3)); };
   return s + tile('storm', 'الطقس والأعاصير', 880, 330, 130, C.teal) + tile('farm', 'الزراعة والمياه', 200, 330, 330, C.green) + tile('help', 'فرق الطوارئ', 880, 720, 450, C.magenta);
 }
 
@@ -285,12 +285,12 @@ function scObserve(f, lf) {
 function scExplore(f, lf) {
   const w = { x: 400, y: GY, s: .74, f, kind: 'woman', seed: 90, L: [16, 100], R: lf > 330 && lf < 500 ? [-118 + 10 * sin(lf / 7), -50] : [-10, -8], heldL: heldPhone(4) };
   const m = { x: 690, y: GY, s: .74, f, seed: 30, k1: C.green, k2: C.teal, R: [-14, -96], L: [8, 6], heldR: `<g transform="translate(0 ${L2 - 34})">${rect(-34, -34, 68, 68, 10, '#EEF2F9', stroke('#9FB0DA', 4))}${rect(-22, -22, 44, 44, 6, C.indigo)}${path('M0 -34 V-58', 'none', stroke('#C9D4E6', 5))}</g>` };
-  let s = sky(f);
+  let s = sky(f) + `<clipPath id="gx"><circle cx="540" cy="520" r="430"/></clipPath><g clip-path="url(#gx)">${path('M110 960 V820 Q540 700 970 820 V960 Z', '#5368A8')}${path('M110 960 V850 Q540 760 970 850 V960 Z', '#6F84C4')}</g>`;
   const mp = tw(lf, 96, 122), rp = tw(lf, 110, 134);
   s += at(840, 310, .5 + .5 * back(mp), circ(0, 0, 96, '#D9DEE8') + circ(-30, -24, 20, '#BFC7D6') + circ(34, 16, 28, '#BFC7D6') + circ(-18, 44, 13, '#BFC7D6') + circ(38, -44, 11, '#BFC7D6'), clamp(mp * 3)) + tag(840, 440, 'القمر', tw(lf, 110, 132), '#fff', C.ink, 150);
   s += at(250, 330, .5 + .5 * back(rp), circ(0, 0, 70, '#D9704A') + circ(-20, -14, 16, '#C25D3A') + circ(22, 22, 20, '#C25D3A') + path('M-60 -30 Q0 -10 62 -32', 'none', stroke('#E7936E', 6)), clamp(rp * 3)) + tag(250, 436, 'المريخ', tw(lf, 124, 146), '#fff', C.ink, 150);
-  const fly = tw(lf, 130, 300); if (fly > 0 && fly < 1) { const u = eio(fly), x = lerp(560, 760, u), y = lerp(700, 360, u) - 60 * sin(PI * u); s += at(x, y, .5, rocketG(.7 + .3 * sin(lf * 1.3)), 1, 32); }
-  const cu = tw(lf, 215, 240); s += tag(690, 560, 'قمر صغير', cu, C.teal, '#fff', 200);
+  const fly = tw(lf, 130, 300); if (fly > 0 && fly < 1) { const u = eio(fly), x = lerp(540, 760, u), y = lerp(640, 360, u) - 60 * sin(PI * u); s += at(x, y, .7, rocketG(.7 + .3 * sin(lf * 1.3)), 1, 32); }
+  const cu = tw(lf, 215, 240); s += tag(872, 596, 'قمر صغير', cu, C.teal, '#fff', 200);
   s += tag(545, 250, 'هندسة وبيانات', tw(lf, 330, 354), C.green, '#fff', 290);
   return s + person(w) + person(m);
 }
