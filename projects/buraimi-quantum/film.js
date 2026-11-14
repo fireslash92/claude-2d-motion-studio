@@ -238,7 +238,7 @@ function scQubit(f, lf) {
 
 // 2. entanglement: two linked qubits; look at one and you know the other
 function scEntangle(f, lf) {
-  const sep = eio(tw(lf, 220, 300)), xa = lerp(640, 870, sep), xb = lerp(440, 210, sep), y = 480, R = 92, measured = lf >= 350;
+  const sep = eio(tw(lf, 220, 300)), xa = lerp(700, 870, sep), xb = lerp(380, 210, sep), y = 480, R = 92, measured = lf >= 350;
   const p = eo(tw(lf, 96, 122)); if (p <= 0) return '';
   let s = '', link = '';
   const lp = tw(lf, 124, 170);
@@ -314,12 +314,12 @@ function scStatus(f, lf) {
   const tp = tw(lf, 96, 120), cold = eo(tw(lf, 110, 200));
   if (tp > 0) { const lvl = lerp(250, 30, cold), tcol = mixHex(C.magenta, C.teal, cold), val = Math.round(lerp(20, -273, cold));
     s += at(600, 520, .6 + .4 * back(tp), rect(-22, -180, 44, 300, 22, '#fff', stroke('#9FB0DA', 5)) + circ(0, 140, 42, '#fff', stroke('#9FB0DA', 5)) + rect(-10, 120 - lvl, 20, lvl, 10, tcol) + circ(0, 140, 30, tcol) +
-      rect(-96, -262, 192, 64, 22, tcol) + num(`${val}°C`, 0, -217, 38, { anchor: 'm', bold: 1, fill: '#fff' }), clamp(tp * 3));
+      rect(-96, 200, 192, 64, 22, tcol) + num(`${val}°C`, 0, 245, 38, { anchor: 'm', bold: 1, fill: '#fff' }), clamp(tp * 3));
     for (let i = 0; i < 6; i++) { const u = ((lf / 90 + i / 6) % 1), x = 480 + i * 42 + 10 * sin(lf / 20 + i), yy = 260 + 480 * u; if (cold > .3) s += at(x, yy, .6, path('M0 -14 V14 M-12 -7 L12 7 M-12 7 L12 -7', 'none', stroke('#8FC7E4', 5)), (1 - u) * cold); } }
   s += tag(330, 216, 'مختبر', tw(lf, 215, 238), C.indigo, '#fff');
   // alongside the ordinary computer, not instead of it
   const cp = tw(lf, 320, 346);
-  if (cp > 0) s += at(800, 300, .6 + .4 * back(cp), rect(-190, -84, 380, 168, 40, '#fff', `filter="url(#sh)"`) + at(108, 0, 1.15, DEV.laptop(C.indigo)) + path('M-16 0 H16 M0 -16 V16', 'none', stroke(C.green, 9)) + at(-108, 0, 1.05, ATOM(C.magenta, 6)), clamp(cp * 3));
+  if (cp > 0) s += at(820, 290, .6 + .4 * back(cp), rect(-190, -84, 380, 168, 40, '#fff', `filter="url(#sh)"`) + at(108, 0, 1.15, DEV.laptop(C.indigo)) + path('M-16 0 H16 M0 -16 V16', 'none', stroke(C.green, 9)) + at(-108, 0, 1.05, ATOM(C.magenta, 6)), clamp(cp * 3));
   return s + person(w);
 }
 
